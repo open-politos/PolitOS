@@ -1,0 +1,34 @@
+# Core Principles
+# These principles are hardcoded and cannot be overridden by any governance process.
+# Changing them requires a constitutional amendment (see governance/constitutional-amendment.yaml).
+
+version: "0.1.0"
+
+principles:
+  transparency:
+    statement: "All decisions, rules, and AI instructions must be publicly visible and auditable."
+    immutable: true
+
+  democratic_control:
+    statement: "No individual or group may unilaterally control the AI's positions or outputs."
+    immutable: true
+
+  member_rights:
+    statement: "Every member has the right to propose changes, participate in deliberation, and access all governance records."
+    immutable: true
+
+  accountability:
+    statement: "Every AI output must be traceable to the governance decisions that produced it."
+    immutable: true
+
+  non_discrimination:
+    statement: "The system must not discriminate against members based on protected characteristics."
+    immutable: true
+
+  human_override:
+    statement: "Humans can always override AI decisions through legitimate governance processes."
+    immutable: true
+
+  open_source:
+    statement: "The infrastructure code remains open-source and freely available."
+    immutable: true

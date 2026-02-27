@@ -1,0 +1,30 @@
+# Rights Matrix
+# Maps membership tiers to specific permissions.
+
+version: "0.1.0"
+
+tiers:
+  observer:
+    description: "Can view all public governance activity"
+    rights:
+      read_knowledge_base: true
+      read_governance_decisions: true
+      read_audit_log: true
+      comment_on_proposals: true
+      propose_changes: false
+      vote: false
+      panel_eligible: false
+
+  member:
+    description: "Full participation in governance"
+    inherits: "observer"
+    rights:
+      propose_changes: true
+      vote: true
+      panel_eligible: false
+
+  verified_member:
+    description: "Identity-verified member eligible for sortition panels"
+    inherits: "member"
+    rights:
+      panel_eligible: true
