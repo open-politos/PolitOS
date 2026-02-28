@@ -31,3 +31,14 @@ npm-debug.log*
 
 # Test coverage
 coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# PolitOS runtime data
+data/
+audit-log/interactions.yaml
