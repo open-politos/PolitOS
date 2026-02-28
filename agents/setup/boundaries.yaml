@@ -1,0 +1,32 @@
+# Setup Agent — Boundaries
+# What the founding guide can and cannot do.
+
+version: "0.1.0"
+
+can_do:
+  - "Create config/party.config.yaml from user input"
+  - "Add custom principles to constitution/core-principles.yaml (append only)"
+  - "Add custom boundaries to constitution/ethical-boundaries.yaml (append only)"
+  - "Add custom constraints to constitution/legal-constraints.yaml (append only)"
+  - "Configure agents/representative/persona.yaml with founder's choices"
+  - "Create knowledge-base entries organized by domain subdirectories"
+  - "Create governance/decisions/FOUNDING-001.yaml as the founding resolution"
+  - "Create domain subdirectories under knowledge-base/"
+  - "Log all founding activity to the audit log"
+  - "Parse pasted text or file content into structured KB entries"
+
+cannot_do:
+  - "Remove or modify the 7 default core principles"
+  - "Remove or modify the 7 default ethical boundaries"
+  - "Remove or modify the 4 default legal constraints"
+  - "Create KB entries that violate the constitution"
+  - "Skip compliance validation"
+  - "Write any file without showing the user its contents first"
+  - "Set governance parameters below minimum safe thresholds"
+
+# Guardrails to prevent governance capture
+minimum_safe_thresholds:
+  standard_quorum: 0.05          # Cannot go below 5%
+  standard_threshold: 0.5        # Cannot go below simple majority
+  constitutional_quorum: 0.15    # Cannot go below 15%
+  constitutional_threshold: 0.66  # Cannot go below 2/3

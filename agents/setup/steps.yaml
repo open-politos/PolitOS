@@ -1,0 +1,246 @@
+# Setup Agent — Founding Process Steps
+# Defines the multi-step wizard for initializing a new PolitOS organization.
+
+version: "0.1.0"
+
+steps:
+  1_identity:
+    title: "Organization Identity"
+    description: "Basic information about the organization"
+    required: true
+    skippable: false
+    output_file: "config/party.config.yaml"
+    template_file: "config/party.config.example.yaml"
+    fields:
+      - key: organization.name
+        prompt: "What is the name of your organization?"
+        required: true
+        example: "Citizens for Digital Democracy"
+      - key: organization.short_name
+        prompt: "What short name or abbreviation should we use?"
+        required: true
+        example: "CDD"
+      - key: organization.language
+        prompt: "What is the primary language? (ISO 639-1 code)"
+        required: true
+        default: "en"
+        note: "All system outputs will be in this language"
+      - key: organization.jurisdiction
+        prompt: "What country does this organization operate in? (ISO 3166-1 alpha-2)"
+        required: true
+        example: "DE"
+        note: "This determines which legal constraints apply"
+      - key: organization.founded
+        prompt: null
+        auto: "current_date"
+      - key: organization.website
+        prompt: "Do you have a website? (optional)"
+        required: false
+        default: null
+      - key: governance.voting_method
+        prompt: "What voting method should be used? Options: approval, ranked-choice, simple-majority"
+        required: true
+        default: "approval"
+        allowed_values: ["approval", "ranked-choice", "simple-majority"]
+      - key: governance.standard_quorum
+        prompt: "What percentage of members must participate for a standard vote? (0.05 - 1.0)"
+        required: true
+        default: 0.1
+        min: 0.05
+        max: 1.0
+      - key: governance.standard_threshold
+        prompt: "What approval percentage is needed to pass a standard proposal? (0.5 - 1.0)"
+        required: true
+        default: 0.6
+        min: 0.5
+        max: 1.0
+
+  2_constitution:
+    title: "Constitutional Review"
+    description: "Review default principles and optionally add custom ones"
+    required: true
+    skippable: true
+    substeps:
+      review_principles:
+        description: "Walk through each of the 7 core principles"
+        source_file: "constitution/core-principles.yaml"
+        action: "Present each principle and ask if the founder wants to add custom principles"
+        rules:
+          - "Default principles cannot be removed or weakened"
+          - "New principles are added with immutable: false (can be amended later through governance)"
+          - "Each custom principle must be validated against existing ones for contradictions"
+      review_boundaries:
+        description: "Walk through ethical boundaries"
+        source_file: "constitution/ethical-boundaries.yaml"
+        action: "Present each boundary and ask if the founder wants to add custom ones"
+        rules:
+          - "Default boundaries cannot be removed"
+          - "New boundaries must specify severity: high or critical"
+      review_legal:
+        description: "Review legal constraints for the chosen jurisdiction"
+        source_file: "constitution/legal-constraints.yaml"
+        action: "Present constraints and ask about jurisdiction-specific requirements"
+        rules:
+          - "Default constraints cannot be removed"
+          - "Jurisdiction is set from Step 1"
+
+  3_representative:
+    title: "Representative Persona"
+    description: "Configure the public spokesperson"
+    required: true
+    skippable: true
+    output_file: "agents/representative/persona.yaml"
+    fields:
+      - key: name
+        prompt: "What should your AI representative be called?"
+        required: true
+        default: "Party Spokesperson"
+        examples: ["Ada", "Vox", "Representative Kim"]
+      - key: voice.tone
+        prompt: "How should your representative communicate? Describe the tone."
+        required: true
+        default: "clear, respectful, factual"
+        examples: ["passionate but measured", "academic and precise", "casual and direct"]
+      - key: voice.language_level
+        prompt: "What language level? (e.g., accessible to general public, academic, youth-oriented)"
+        required: true
+        default: "accessible to general public"
+      - key: voice.formality
+        prompt: "How formal should the representative be?"
+        required: true
+        default: "professional but approachable"
+      - key: fallback_response
+        prompt: "What should the representative say when asked about an undecided topic?"
+        required: true
+        default: >
+          This topic has not yet been addressed through our governance process.
+          I cannot take a position on it until our members have deliberated and decided.
+          If you would like to propose this as a topic for deliberation, please let me know.
+    also_updates:
+      - file: "config/party.config.yaml"
+        mappings:
+          - from: name
+            to: representative.name
+          - from: voice.tone
+            to: representative.tone
+
+  4_knowledge_base:
+    title: "Knowledge Base Seeding"
+    description: "Establish initial policy positions"
+    required: false
+    skippable: true
+    paths:
+      document_import:
+        label: "I have an existing document (party program, manifesto, policy paper)"
+        description: "Parse an existing document into structured KB entries"
+        instructions: |
+          Ask the user to paste text or provide a file path.
+          For each distinct policy position found:
+          1. Identify the domain it belongs to (from domains.yaml)
+          2. Extract a clear, concise title
+          3. Extract or summarize the position content
+          4. Structure it as a KB entry
+          5. Present the structured entry to the user for approval before writing
+        supported_formats:
+          - "Pasted text (Markdown or plain text)"
+          - "File path to a local .md, .txt, or .pdf file"
+
+      guided_questionnaire:
+        label: "I'd like to answer questions about my positions"
+        description: "Walk through domains with structured questions"
+        reference: "agents/setup/domains.yaml"
+        instructions: |
+          For each domain the user wants to address:
+          1. Present the domain name and guiding questions from domains.yaml
+          2. Let the user articulate their position conversationally
+          3. Structure their response into a KB entry
+          4. Present the structured entry for approval
+          5. Ask if they want to continue with more topics in this domain
+
+      combined:
+        label: "Both — import a document first, then fill gaps"
+        description: "Import a document, then walk through uncovered domains"
+        instructions: |
+          1. Run the document import flow first
+          2. Identify which domains have no entries yet
+          3. Show the user which domains are covered and which are not
+          4. Offer to walk through the uncovered domains with questions
+
+      skip:
+        label: "Skip — we'll build positions through governance later"
+        description: "Start with an empty knowledge base"
+
+    entry_format:
+      id: "kb-YYYY-NNN"
+      domain: "<domain-name>"
+      title: "<clear title>"
+      content: "<policy position text>"
+      approved_by: "FOUNDING-001"
+      approved_date: "<founding date from step 1>"
+      version: 1
+      supersedes: null
+
+    entry_file_pattern: "knowledge-base/{domain}/{topic-hint}.yaml"
+
+  5_validation:
+    title: "Compliance Validation"
+    description: "Validate all generated content against the constitution"
+    required: true
+    skippable: false
+    automatic: true
+    instructions: |
+      For each KB entry created in Step 4:
+      1. Invoke the compliance agent (via Task tool)
+      2. Check against core-principles.yaml, ethical-boundaries.yaml, legal-constraints.yaml
+      3. If violations found:
+         a. Show the user which principle/boundary/constraint is violated
+         b. Suggest a compliant revision
+         c. Ask the user to accept the revision, manually edit, or discard the entry
+      4. Re-validate any revised entries
+      5. If Step 4 was skipped, report "No entries to validate" and proceed
+    compliance_prompt: >
+      Read all files in constitution/ and validate whether the following
+      knowledge base entry complies with all core principles, ethical
+      boundaries, and legal constraints. Report any violations with
+      specific references. Entry to validate: {entry}
+
+  6_founding_report:
+    title: "Founding Report"
+    description: "Generate summary and create founding governance record"
+    required: true
+    skippable: false
+    automatic: true
+    outputs:
+      founding_resolution:
+        file: "governance/decisions/FOUNDING-001.yaml"
+        template: "agents/setup/founding-resolution-template.yaml"
+      audit_entry:
+        file: "audit-log/interactions.yaml"
+        type: "founding_event"
+      summary:
+        target: "displayed to user"
+        includes:
+          - "Organization name, language, jurisdiction"
+          - "Number of constitutional principles (default + custom)"
+          - "Representative name and tone"
+          - "Number of KB entries created, organized by domain"
+          - "Founding resolution ID"
+    closing_message: >
+      Your organization is ready. Switching to representative mode.
+
+navigation:
+  skip_allowed: true
+  back_allowed: true
+  non_skippable_steps:
+    - "1_identity"
+    - "5_validation"
+    - "6_founding_report"
+
+# How to detect step completion when resuming a session
+state_detection:
+  1_identity: "config/party.config.yaml exists"
+  2_constitution: "Custom principles exist beyond the 7 defaults, OR user confirmed defaults are sufficient"
+  3_representative: "agents/representative/persona.yaml name field differs from 'Party Spokesperson'"
+  4_knowledge_base: "At least one .yaml file exists in a knowledge-base/ subdirectory"
+  5_validation: "governance/decisions/FOUNDING-001.yaml exists with compliance_validated: true"
+  6_founding_report: "governance/decisions/FOUNDING-001.yaml exists with status: enacted"
