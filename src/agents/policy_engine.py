@@ -3,7 +3,7 @@
 from crewai import Agent
 from crewai.tools import tool
 
-from src.core.config import load_config
+from src.core.config import get_crewai_llm_model, load_config
 from src.core.kb import search, list_topics
 
 
@@ -49,6 +49,7 @@ def create_policy_engine_agent() -> Agent:
             "Every claim must cite its source as [KB: entry-id]."
         ),
         tools=[search_policies, list_policy_topics],
+        llm=get_crewai_llm_model(cfg),
         verbose=False,
         allow_delegation=False,
     )

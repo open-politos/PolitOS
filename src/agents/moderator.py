@@ -5,7 +5,7 @@ from pathlib import Path
 import yaml
 from crewai import Agent
 
-from src.core.config import PROJECT_ROOT, load_config
+from src.core.config import PROJECT_ROOT, get_crewai_llm_model, load_config
 
 
 def _load_deliberation_protocol(root: Path | None = None) -> dict:
@@ -50,6 +50,7 @@ def create_moderator_agent() -> Agent:
             "- Ensure quorum requirements are met\n"
             "- Manage sortition panel selection when needed"
         ),
+        llm=get_crewai_llm_model(cfg),
         verbose=False,
         allow_delegation=False,
     )

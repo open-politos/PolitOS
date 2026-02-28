@@ -7,23 +7,6 @@ from src.agents.compliance import create_compliance_agent
 from src.agents.moderator import create_moderator_agent
 from src.agents.representative import create_representative_agent
 from src.agents.summarizer import create_summarizer_agent
-from src.core.config import load_config
-
-
-def _get_llm_model() -> str:
-    """Get the LLM model string for CrewAI from config."""
-    cfg = load_config()
-    provider = cfg.llm.provider
-    model = cfg.llm.model
-    if provider in ("claude", "anthropic"):
-        return model
-    if provider == "openai":
-        return model
-    if "/" in model:
-        return model
-    return f"{provider}/{model}"
-
-
 def run_chat(message: str) -> dict:
     """Run the citizen chat workflow.
 

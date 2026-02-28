@@ -2,7 +2,7 @@
 
 from crewai import Agent
 
-from src.core.config import load_config
+from src.core.config import get_crewai_llm_model, load_config
 
 
 def create_kb_curator_agent() -> Agent:
@@ -27,6 +27,7 @@ def create_kb_curator_agent() -> Agent:
             "- Flag any entries that appear outdated based on new information\n"
             "- Maintain consistent quality across all entries"
         ),
+        llm=get_crewai_llm_model(cfg),
         verbose=False,
         allow_delegation=False,
     )

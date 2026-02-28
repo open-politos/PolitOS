@@ -6,7 +6,7 @@ import yaml
 from crewai import Agent
 from crewai.tools import tool
 
-from src.core.config import PROJECT_ROOT, load_config
+from src.core.config import PROJECT_ROOT, get_crewai_llm_model, load_config
 from src.core.kb import get_position, search
 
 
@@ -109,6 +109,7 @@ def create_representative_agent() -> Agent:
         ),
         backstory=backstory,
         tools=[search_knowledge_base, get_position_on_topic],
+        llm=get_crewai_llm_model(cfg),
         verbose=False,
         allow_delegation=False,
     )

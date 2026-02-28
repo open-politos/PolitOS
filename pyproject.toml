@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "PolitOS — AI-governed political organization runtime"
 requires-python = ">=3.11"
 dependencies = [
-    "crewai>=0.86.0",
+    "crewai[anthropic]>=0.86.0",
     "crewai-tools>=0.17.0",
     "litellm>=1.50.0",
     "chromadb>=0.5.0",
@@ -13,10 +13,12 @@ dependencies = [
     "pyyaml>=6.0",
     "python-dotenv>=1.0.0",
     "pydantic>=2.0.0",
+    "mcp[cli]>=1.0.0",
 ]
 
 [project.scripts]
 politos = "src.main:main"
+politos-mcp = "src.mcp_server:main"
 
 [build-system]
 requires = ["setuptools>=75.0"]

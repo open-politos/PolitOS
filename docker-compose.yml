@@ -1,0 +1,34 @@
+services:
+  politos:
+    build:
+      context: .
+      target: api
+    ports:
+      - "8765:8000"
+    env_file:
+      - .env
+    environment:
+      - CREWAI_TRACING_ENABLED=false
+      - LITELLM_LOG=ERROR
+    volumes:
+      - ./data:/app/data
+      - ./audit-log:/app/audit-log
+
+  politos-mcp:
+    build:
+      context: .
+      target: mcp
+    env_file:
+      - .env
+    environment:
+      - CREWAI_TRACING_ENABLED=false
+      - LITELLM_LOG=ERROR
+    volumes:
+      - ./data:/app/data
+      - ./audit-log:/app/audit-log
+      - ./governance:/app/governance
+      - ./knowledge-base:/app/knowledge-base
+      - ./constitution:/app/constitution
+      - ./config:/app/config
+      - ./agents:/app/agents
+    stdin_open: true

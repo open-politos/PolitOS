@@ -103,6 +103,21 @@ def _deep_merge(base: dict, override: dict) -> dict:
     return merged
 
 
+def get_crewai_llm_model(cfg: "Config | None" = None) -> str:
+    """Get the LLM model string in CrewAI/LiteLLM format (e.g. 'anthropic/claude-opus-4-6')."""
+    if cfg is None:
+        cfg = load_config()
+    provider = cfg.llm.provider
+    model = cfg.llm.model
+    if provider in ("claude", "anthropic"):
+        return f"anthropic/{model}"
+    if provider == "openai":
+        return f"openai/{model}"
+    if "/" in model:
+        return model
+    return f"{provider}/{model}"
+
+
 def load_config(root: Path | None = None) -> Config:
     """Load party config from YAML, merged with defaults."""
     root = root or PROJECT_ROOT

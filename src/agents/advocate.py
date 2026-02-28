@@ -2,7 +2,7 @@
 
 from crewai import Agent
 
-from src.core.config import load_config
+from src.core.config import get_crewai_llm_model, load_config
 
 
 def create_advocate_agent() -> Agent:
@@ -31,6 +31,7 @@ def create_advocate_agent() -> Agent:
             "3. Affected groups not represented\n"
             "4. Questions the proposer should answer"
         ),
+        llm=get_crewai_llm_model(cfg),
         verbose=False,
         allow_delegation=False,
     )

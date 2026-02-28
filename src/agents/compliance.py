@@ -3,7 +3,7 @@
 from crewai import Agent
 from crewai.tools import tool
 
-from src.core.config import load_config
+from src.core.config import get_crewai_llm_model, load_config
 from src.core.constitution import Constitution, ValidationResult, load_constitution, validate
 
 
@@ -57,6 +57,7 @@ def create_compliance_agent() -> Agent:
             f"Here are the rules you enforce:\n\n{constitution.all_rules_text()}"
         ),
         tools=[validate_against_constitution, get_constitution_rules],
+        llm=get_crewai_llm_model(cfg),
         verbose=False,
         allow_delegation=False,
     )

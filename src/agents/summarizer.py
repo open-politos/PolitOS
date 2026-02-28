@@ -2,7 +2,7 @@
 
 from crewai import Agent
 
-from src.core.config import load_config
+from src.core.config import get_crewai_llm_model, load_config
 
 
 def create_summarizer_agent() -> Agent:
@@ -31,6 +31,7 @@ def create_summarizer_agent() -> Agent:
             "3. Key arguments against\n"
             "4. What happens next"
         ),
+        llm=get_crewai_llm_model(cfg),
         verbose=False,
         allow_delegation=False,
     )
