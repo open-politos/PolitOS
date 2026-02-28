@@ -219,11 +219,236 @@ def politos_validate(statement: str) -> dict:
     }
 
 
+@mcp.tool()
+def politos_setup_status() -> dict:
+    """Check the founding status of this PolitOS organization.
+
+    Returns which setup steps are complete, the current config (if any),
+    and available policy domains for knowledge base seeding.
+
+    Returns:
+        Step completion map, current config, and domain list.
+    """
+    from src.core.setup import get_setup_status, get_domains
+
+    status = get_setup_status()
+    status["domains"] = get_domains()
+    return status
+
+
+@mcp.tool()
+def politos_setup_identity(
+    name: str,
+    short_name: str,
+    language: str,
+    jurisdiction: str,
+    voting_method: str = "approval",
+    standard_quorum: float = 0.1,
+    standard_threshold: float = 0.6,
+    website: str | None = None,
+) -> dict:
+    """Set up the organization identity (Step 1 of founding).
+
+    Creates config/party.config.yaml with the organization's basic info.
+
+    Args:
+        name: Full organization name (e.g. "Citizens for Digital Democracy").
+        short_name: Abbreviation (e.g. "CDD").
+        language: Primary language ISO 639-1 code (e.g. "en", "de").
+        jurisdiction: Country ISO 3166-1 alpha-2 code (e.g. "DE", "US").
+        voting_method: "approval", "ranked-choice", or "simple-majority".
+        standard_quorum: Min participation ratio (0.05–1.0, default 0.1).
+        standard_threshold: Approval ratio to pass (0.5–1.0, default 0.6).
+        website: Optional website URL.
+
+    Returns:
+        Written config or error.
+    """
+    from src.core.setup import write_identity
+
+    return write_identity({
+        "name": name,
+        "short_name": short_name,
+        "language": language,
+        "jurisdiction": jurisdiction,
+        "website": website,
+        "voting_method": voting_method,
+        "standard_quorum": standard_quorum,
+        "standard_threshold": standard_threshold,
+    })
+
+
+@mcp.tool()
+def politos_setup_constitution(
+    custom_principles: list[dict] | None = None,
+    custom_boundaries: list[dict] | None = None,
+    custom_constraints: list[dict] | None = None,
+) -> dict:
+    """Review or extend the constitution (Step 2 of founding).
+
+    Call with no arguments to read the current constitution.
+    Pass custom rules to append them (immutable: false). Default rules
+    cannot be removed.
+
+    Args:
+        custom_principles: List of {name, statement} to add as principles.
+        custom_boundaries: List of {name, description, severity?} to add.
+        custom_constraints: List of {name, description, applies_to?} to add.
+
+    Returns:
+        Current constitution (read-only mode) or added rules summary.
+    """
+    from src.core.setup import add_constitutional_rules
+
+    return add_constitutional_rules(
+        principles=custom_principles,
+        boundaries=custom_boundaries,
+        constraints=custom_constraints,
+    )
+
+
+@mcp.tool()
+def politos_setup_persona(
+    name: str,
+    tone: str,
+    language_level: str = "accessible to general public",
+    formality: str = "professional but approachable",
+    fallback_response: str | None = None,
+) -> dict:
+    """Configure the representative agent persona (Step 3 of founding).
+
+    Args:
+        name: Name of the AI representative (e.g. "Ada", "Vox").
+        tone: Communication tone (e.g. "passionate but measured").
+        language_level: Target audience level (default: general public).
+        formality: Formality level (default: professional but approachable).
+        fallback_response: What to say on undecided topics (optional, has default).
+
+    Returns:
+        Written persona config.
+    """
+    from src.core.setup import write_persona
+
+    fields: dict = {
+        "name": name,
+        "tone": tone,
+        "language_level": language_level,
+        "formality": formality,
+    }
+    if fallback_response is not None:
+        fields["fallback_response"] = fallback_response
+    return write_persona(fields)
+
+
+@mcp.tool()
+def politos_setup_seed_kb(
+    domain: str,
+    title: str,
+    content: str,
+    entry_id: str | None = None,
+    topic_hint: str | None = None,
+) -> dict:
+    """Add a knowledge base entry during founding (Step 4).
+
+    Each call creates one policy position. Call multiple times to seed
+    positions across domains. Use politos_setup_status to see available domains.
+
+    Args:
+        domain: Policy domain (e.g. "economy", "environment", "digital-rights").
+        title: Clear title for the position (e.g. "Position on minimum wage").
+        content: Full policy position text.
+        entry_id: Optional custom ID (auto-generated as kb-YYYY-NNN if omitted).
+        topic_hint: Optional filename hint (derived from title if omitted).
+
+    Returns:
+        Created entry with ID and file path.
+    """
+    from src.core.setup import write_kb_entry
+
+    return write_kb_entry(
+        domain=domain,
+        title=title,
+        content=content,
+        entry_id=entry_id,
+        topic_hint=topic_hint,
+    )
+
+
+@mcp.tool()
+def politos_setup_complete(
+    discard_entry_ids: list[str] | None = None,
+) -> dict:
+    """Finalize the founding process (Steps 5+6).
+
+    Validates all KB entries against the constitution. If all pass,
+    creates the founding resolution and audit log entry.
+
+    Args:
+        discard_entry_ids: Optional list of KB entry IDs to delete before validation.
+
+    Returns:
+        Validation results. If all valid, also returns founding summary.
+        If violations found, returns them without creating the report —
+        fix entries and call again.
+    """
+    from src.core.setup import (
+        get_setup_status,
+        validate_all_kb_entries,
+        create_founding_report,
+    )
+    from src.core.kb import index_knowledge_base, load_all_entries
+
+    # Check step 1 is done
+    status = get_setup_status()
+    if not status["steps"]["1_identity"]["complete"]:
+        return {"error": "Step 1 (Organization Identity) must be completed first. Use politos_setup_identity."}
+
+    # Discard entries if requested
+    if discard_entry_ids:
+        kb_dir = PROJECT_ROOT / "knowledge-base"
+        for entry_id in discard_entry_ids:
+            for path in kb_dir.rglob("*.yaml"):
+                if path.name == "README.md":
+                    continue
+                try:
+                    data = yaml.safe_load(path.read_text())
+                    if isinstance(data, dict) and data.get("id") == entry_id:
+                        path.unlink()
+                        break
+                except (yaml.YAMLError, UnicodeDecodeError):
+                    continue
+
+    # Validate
+    validation = validate_all_kb_entries()
+    if not validation["all_valid"]:
+        return {
+            "status": "violations_found",
+            "validation": validation,
+            "message": "Fix or discard violating entries, then call politos_setup_complete again.",
+        }
+
+    # Create founding report
+    report = create_founding_report()
+
+    # Rebuild ChromaDB index if there are entries
+    entries = load_all_entries()
+    if entries:
+        index_knowledge_base()
+
+    return {
+        "status": "complete",
+        "validation": validation,
+        "founding_summary": report,
+    }
+
+
 def main():
     """Run the PolitOS MCP server (stdio transport)."""
-    from src.core.kb import index_knowledge_base
+    from src.core.kb import index_knowledge_base, load_all_entries
 
-    index_knowledge_base()
+    # Only index if there are KB entries (avoid unnecessary ChromaDB init during clean setup)
+    if load_all_entries():
+        index_knowledge_base()
     mcp.run(transport="stdio")
 
 

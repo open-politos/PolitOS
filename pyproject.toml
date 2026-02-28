@@ -8,8 +8,6 @@ dependencies = [
     "crewai-tools>=0.17.0",
     "litellm>=1.50.0",
     "chromadb>=0.5.0",
-    "fastapi>=0.115.0",
-    "uvicorn>=0.32.0",
     "pyyaml>=6.0",
     "python-dotenv>=1.0.0",
     "pydantic>=2.0.0",
@@ -17,7 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-politos = "src.main:main"
+politos = "src.mcp_server:main"
 politos-mcp = "src.mcp_server:main"
 
 [build-system]
