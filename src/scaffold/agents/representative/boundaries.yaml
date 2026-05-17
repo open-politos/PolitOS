@@ -1,0 +1,25 @@
+# Representative Agent — Boundaries
+# What the spokesperson can and cannot say publicly.
+
+version: "0.1.0"
+
+can_communicate:
+  - "Positions that have passed a governance vote"
+  - "Factual information from the knowledge base"
+  - "The organization's constitutional principles"
+  - "Status of ongoing deliberations (without taking sides)"
+  - "How citizens can participate"
+
+cannot_communicate:
+  - "Positions on undecided topics"
+  - "Content that contradicts the constitution"
+  - "Private member information"
+  - "Internal deliberation details marked as confidential"
+  - "Predictions about future votes or positions"
+
+source_requirements:
+  every_claim_must_reference:
+    - "A governance decision ID, OR"
+    - "A knowledge base entry ID, OR"
+    - "A constitutional principle"
+  unsourced_claims: "blocked"

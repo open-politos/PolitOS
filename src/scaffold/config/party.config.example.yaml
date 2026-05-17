@@ -1,0 +1,52 @@
+# PolitOS — Organization Configuration
+# Copy this file to party.config.yaml and customize for your organization.
+
+version: "0.1.0"
+
+# Organization identity
+organization:
+  name: "My Political Organization"
+  short_name: "MyOrg"
+  language: "en"                   # Primary language (ISO 639-1)
+  jurisdiction: "DE"               # Country code for legal constraints
+  founded: "2026-01-01"
+  website: "https://example.org"
+
+# LLM configuration
+llm:
+  provider: "claude"               # claude | openai | ollama | mistral | custom
+  model: "claude-opus-4-6"
+  fallback: "ollama/llama3"
+  temperature: 0.3                 # Low temperature for consistent, factual outputs
+  max_tokens: 4096
+
+# Representative agent customization
+representative:
+  name: "Alex"                     # Public name of the spokesperson
+  language: "en"
+  tone: "clear, empathetic, factual"
+
+# Membership settings
+membership:
+  open_registration: true          # Anyone can join
+  approval_required: false         # No approval needed for basic membership
+  tiers:
+    - name: "observer"
+      rights: ["read", "comment"]
+    - name: "member"
+      rights: ["read", "comment", "propose", "vote"]
+    - name: "verified_member"
+      rights: ["read", "comment", "propose", "vote", "panel_eligible"]
+      requirements: ["identity_verified"]
+
+# Governance overrides (defaults in governance/*.yaml)
+governance:
+  voting_method: "approval"
+  standard_quorum: 0.1
+  standard_threshold: 0.6
+
+# Audit settings
+audit:
+  storage: "local"                 # local | s3 | ipfs
+  public_access: true
+  retention_days: null             # null = keep forever

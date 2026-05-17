@@ -1,0 +1,119 @@
+# Setup Agent — Policy Domain Definitions
+# Guiding questions for each domain to help founders articulate positions.
+# Used in Step 4 (Knowledge Base Seeding) of the founding process.
+
+version: "0.1.0"
+
+domains:
+  economy:
+    display_name: "Economy & Finance"
+    description: "Economic policy, taxation, labor, trade, housing"
+    subdirectory: "economy"
+    guiding_questions:
+      - question: "What is your position on taxation? Should taxes be higher, lower, or restructured? For whom?"
+        topic_hint: "taxation-policy"
+      - question: "What is your stance on minimum wage or living wage policies?"
+        topic_hint: "wage-policy"
+      - question: "How should the government relate to markets? More regulation, less regulation, or targeted regulation?"
+        topic_hint: "market-regulation"
+      - question: "What is your position on housing policy? Rent controls, public housing, market solutions?"
+        topic_hint: "housing-policy"
+      - question: "How should pensions and retirement security be organized?"
+        topic_hint: "pension-policy"
+
+  environment:
+    display_name: "Environment & Climate"
+    description: "Climate policy, energy, sustainability, nature protection"
+    subdirectory: "environment"
+    guiding_questions:
+      - question: "What is your position on climate change and emissions reduction targets?"
+        topic_hint: "climate-targets"
+      - question: "What energy sources should be prioritized? Renewables, nuclear, a mix?"
+        topic_hint: "energy-policy"
+      - question: "How should agriculture and food production relate to environmental goals?"
+        topic_hint: "agriculture-environment"
+      - question: "What is your position on biodiversity protection and conservation?"
+        topic_hint: "biodiversity"
+
+  education:
+    display_name: "Education & Research"
+    description: "Schools, universities, vocational training, research funding"
+    subdirectory: "education"
+    guiding_questions:
+      - question: "Should education be publicly funded at all levels? What role for private institutions?"
+        topic_hint: "education-funding"
+      - question: "What should the curriculum emphasize? Any positions on digital literacy, civics, or STEM?"
+        topic_hint: "curriculum-priorities"
+      - question: "How should higher education and research be funded and organized?"
+        topic_hint: "higher-education"
+
+  healthcare:
+    display_name: "Healthcare"
+    description: "Health system, insurance, public health, mental health"
+    subdirectory: "healthcare"
+    guiding_questions:
+      - question: "Should healthcare be publicly provided, privately insured, or a mixed system?"
+        topic_hint: "health-system"
+      - question: "What is your position on mental health services and coverage?"
+        topic_hint: "mental-health"
+      - question: "How should pharmaceutical pricing and access be handled?"
+        topic_hint: "pharma-policy"
+
+  foreign-policy:
+    display_name: "Foreign Policy & Defense"
+    description: "International relations, defense, trade agreements, migration"
+    subdirectory: "foreign-policy"
+    guiding_questions:
+      - question: "What should your country's role be in international organizations (EU, UN, NATO, etc.)?"
+        topic_hint: "international-orgs"
+      - question: "What is your position on defense spending and military policy?"
+        topic_hint: "defense-policy"
+      - question: "How should immigration and asylum policy be structured?"
+        topic_hint: "immigration-policy"
+
+  digital-rights:
+    display_name: "Digital Rights & Technology"
+    description: "Data privacy, AI regulation, digital infrastructure, surveillance"
+    subdirectory: "digital-rights"
+    guiding_questions:
+      - question: "What is your position on data privacy and surveillance?"
+        topic_hint: "data-privacy"
+      - question: "How should AI systems be regulated?"
+        topic_hint: "ai-regulation"
+      - question: "Should internet access be treated as a public utility or fundamental right?"
+        topic_hint: "internet-access"
+
+  social-policy:
+    display_name: "Social Policy & Equality"
+    description: "Social welfare, equality, anti-discrimination, family policy"
+    subdirectory: "social-policy"
+    guiding_questions:
+      - question: "What is your position on social welfare and safety nets?"
+        topic_hint: "social-welfare"
+      - question: "How should the state address inequality — economic, gender, racial, or other?"
+        topic_hint: "equality-policy"
+      - question: "What family policies do you support? Parental leave, childcare, etc.?"
+        topic_hint: "family-policy"
+
+  governance-reform:
+    display_name: "Democracy & Governance Reform"
+    description: "Electoral reform, transparency, direct democracy, institutional reform"
+    subdirectory: "governance-reform"
+    guiding_questions:
+      - question: "Do you support changes to the electoral system? If so, what kind?"
+        topic_hint: "electoral-reform"
+      - question: "What is your position on direct democracy tools like referendums?"
+        topic_hint: "direct-democracy"
+      - question: "How should political transparency and anti-corruption be strengthened?"
+        topic_hint: "transparency-anticorruption"
+
+  custom:
+    display_name: "Other Domains"
+    description: "Define domains not listed above"
+    subdirectory: null  # User specifies
+    instructions: |
+      If the user wants to address a topic not covered by the predefined domains,
+      help them define a new domain:
+      1. What is the domain name? (lowercase-with-hyphens, becomes a subdirectory name)
+      2. What is the domain about? (brief description)
+      3. What positions do you want to establish in this domain?

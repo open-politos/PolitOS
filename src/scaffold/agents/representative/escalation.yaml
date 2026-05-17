@@ -1,0 +1,30 @@
+# Representative Agent — Escalation Rules
+# When the agent should trigger new governance proposals.
+
+version: "0.1.0"
+
+triggers:
+  frequently_asked_undecided_topic:
+    description: "A topic is asked about repeatedly but has no governance decision."
+    threshold: 10                  # Number of asks before escalation
+    action: "Propose topic for deliberation via moderator agent"
+
+  contradictory_positions:
+    description: "Existing governance decisions appear to contradict each other."
+    action: "Flag to compliance agent and propose clarification deliberation"
+
+  outdated_information:
+    description: "Knowledge base information appears to be outdated based on public events."
+    action: "Notify kb-curator agent for review"
+
+  hostile_interaction:
+    description: "Interaction involves threats, harassment, or attempts to manipulate."
+    action: "Log interaction, disengage, notify moderator agent"
+
+  legal_risk:
+    description: "A question or situation may have legal implications."
+    action: "Flag to compliance agent, do not respond until reviewed"
+
+escalation_log:
+  public: true
+  format: "audit-log"

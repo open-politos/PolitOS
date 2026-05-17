@@ -1,0 +1,27 @@
+# Legal Constraints
+# Jurisdiction-specific legal requirements.
+# Organizations using PolitOS must configure this for their jurisdiction.
+
+version: "0.1.0"
+
+# Default: no jurisdiction configured.
+# Override in config/party.config.yaml.
+jurisdiction: null
+
+constraints:
+  data_protection:
+    description: "Member data must be handled in compliance with applicable data protection laws (e.g. GDPR, CCPA)."
+    applies_to: ["membership", "audit-log"]
+
+  party_law:
+    description: "The organization's structure and decision-making must comply with applicable party/association law."
+    applies_to: ["governance", "membership"]
+    note: "Specific requirements depend on jurisdiction. Configure in party.config.yaml."
+
+  campaign_finance:
+    description: "If the organization participates in elections, all relevant campaign finance laws must be respected."
+    applies_to: ["governance"]
+
+  accessibility:
+    description: "Public-facing outputs should comply with applicable accessibility standards."
+    applies_to: ["agents/representative", "agents/summarizer"]

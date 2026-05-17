@@ -1,0 +1,41 @@
+# Deliberation Protocol
+# Structured discussion process before any vote.
+
+version: "0.1.0"
+
+phases:
+  1_proposal:
+    description: "A member submits a formal proposal with rationale."
+    required_fields:
+      - title
+      - description
+      - rationale
+      - affected_domains        # Which policy areas are impacted
+    automated_actions:
+      - "Compliance agent checks proposal against constitution"
+      - "Advocate agent generates counter-arguments"
+      - "Summarizer agent creates citizen-facing summary"
+
+  2_discussion:
+    description: "Open discussion period. All members can comment."
+    min_duration_hours: 72
+    features:
+      - "Threaded discussion per proposal"
+      - "Members can suggest amendments"
+      - "Advocate agent highlights potential concerns"
+
+  3_revision:
+    description: "Proposer may revise based on discussion. Revisions are tracked."
+    max_revisions: 3
+    revision_resets_discussion: false   # Discussion continues after revision
+
+  4_final_summary:
+    description: "Summarizer agent produces final summary of proposal and key arguments."
+    automated_actions:
+      - "Generate pro/con summary"
+      - "List all amendments"
+      - "Compliance agent re-validates final version"
+
+  5_vote:
+    description: "Formal vote according to voting-rules.yaml."
+    reference: "governance/voting-rules.yaml"

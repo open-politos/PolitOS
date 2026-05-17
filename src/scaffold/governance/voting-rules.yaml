@@ -1,0 +1,34 @@
+# Voting Rules
+# Configurable rules for how decisions are made.
+
+version: "0.1.0"
+
+defaults:
+  # Standard proposal — e.g. adding a position to the knowledge base
+  standard:
+    quorum: 0.1                    # 10% of eligible members must participate
+    threshold: 0.6                 # 60% approval to pass
+    voting_period_hours: 168       # 7 days
+    deliberation_required: true
+    min_deliberation_hours: 72     # 3 days minimum discussion before vote
+
+  # Constitutional amendment — changes to core-principles or ethical-boundaries
+  constitutional:
+    quorum: 0.25                   # 25% of eligible members
+    threshold: 0.75                # 75% supermajority
+    voting_period_hours: 336       # 14 days
+    deliberation_required: true
+    min_deliberation_hours: 168    # 7 days minimum discussion
+    cooling_off_hours: 48          # 48h between deliberation end and vote start
+
+  # Emergency — time-sensitive decisions (e.g. retracting a harmful statement)
+  emergency:
+    quorum: 0.05                   # 5% of eligible members
+    threshold: 0.6
+    voting_period_hours: 24        # 24 hours
+    deliberation_required: false
+    requires_justification: true   # Must explain why emergency process is needed
+    post_review_required: true     # Must be reviewed under standard rules afterward
+
+voting_method: "approval"          # approval | ranked-choice | simple-majority
+anonymous_ballots: false           # Votes are public by default for transparency

@@ -1,0 +1,32 @@
+# Sortition — Random Panel Selection
+# Prevents organized factions from capturing decision-making.
+
+version: "0.1.0"
+
+# When sortition is used
+triggers:
+  - "Constitutional amendments"
+  - "Proposals flagged as high-impact by the compliance agent"
+  - "Disputes between members"
+  - "Review of emergency decisions"
+
+panel:
+  size: 21                         # Panel members selected at random
+  min_size: 7                      # Minimum if membership is small
+  selection_method: "cryptographic" # Verifiable random selection
+  eligibility:
+    min_membership_days: 30        # Must be a member for at least 30 days
+    active_in_last_days: 90        # Must have participated in the last 90 days
+  recusal:
+    conflict_of_interest: true     # Members with declared conflicts are excluded
+    voluntary: true                # Members can recuse themselves
+
+  term_limit:
+    consecutive_panels: 2          # Cannot serve on more than 2 consecutive panels
+    cooldown_days: 60              # Cooldown between panel terms
+
+transparency:
+  selection_seed_public: true      # The random seed is published for verification
+  panel_members_public: true       # Panel membership is public
+  deliberation_public: false       # Panel deliberation may be private
+  decision_public: true            # Final decision and reasoning are always public

@@ -42,3 +42,4 @@ venv/
 # PolitOS runtime data
 data/
 audit-log/interactions.yaml
+config/party.config.yaml

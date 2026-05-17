@@ -1,0 +1,46 @@
+# Setup Agent — Founding Resolution Template
+# Used in Step 6 to create governance/decisions/FOUNDING-001.yaml.
+# Placeholders in {braces} are replaced with actual values during founding.
+
+version: "0.1.0"
+
+template:
+  id: "FOUNDING-001"
+  type: "founding_resolution"
+  title: "Founding Resolution of {organization_name}"
+  date: "{founding_date}"
+  description: |
+    This resolution records the founding of {organization_name} and establishes
+    its initial configuration, constitutional framework, and knowledge base entries.
+    All initial knowledge base entries are approved under this resolution as the
+    founding positions of the organization. These positions may be amended through
+    the standard governance process.
+
+  founded_by: "founding_members"
+
+  sections:
+    configuration:
+      description: "Organization configuration established"
+      file: "config/party.config.yaml"
+
+    constitution:
+      description: "Constitutional framework adopted"
+      files:
+        - "constitution/core-principles.yaml"
+        - "constitution/ethical-boundaries.yaml"
+        - "constitution/legal-constraints.yaml"
+      custom_additions: []  # List of custom principles/boundaries added
+
+    representative:
+      description: "Public representative configured"
+      name: "{representative_name}"
+      file: "agents/representative/persona.yaml"
+
+    knowledge_base:
+      description: "Initial knowledge base entries established"
+      entries: []          # List of KB entry IDs created during founding
+      domains_covered: []  # List of domains with entries
+      compliance_validated: true
+
+  status: "enacted"
+  enacted_date: "{founding_date}"

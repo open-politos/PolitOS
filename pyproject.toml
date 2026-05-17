@@ -17,6 +17,7 @@ dependencies = [
 [project.scripts]
 politos = "src.mcp_server:main"
 politos-mcp = "src.mcp_server:main"
+politos-init = "src.cli:init"
 
 [build-system]
 requires = ["setuptools>=75.0"]
@@ -25,3 +26,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src*"]
+
+[tool.setuptools.package-data]
+"src.scaffold" = ["**/*"]
