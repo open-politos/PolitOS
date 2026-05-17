@@ -1,6 +1,6 @@
 # 🗳️ PolitOS
 
-> An open-source specification for democratic political participation.
+> An open framework for transparent, AI-augmented democratic organizations.
 
 🌐 [open-politos.org](https://open-politos.org) · 📦 [github.com/open-politos](https://github.com/open-politos)
 
@@ -8,19 +8,20 @@ Political parties today are often opaque, slow to respond, and easily captured b
 
 **PolitOS is a different approach.**
 
-It is an open specification that describes how anyone — a group of citizens, a movement, a new party — can build a political organization where the rules are written in public, decisions are made transparently, and an AI assistant helps translate collective will into concrete policy positions.
+It is an open framework — a specification, plus a reference implementation — for how anyone (a group of citizens, a movement, a new party) can build a political organization where the rules are written in public, decisions are made transparently, and an AI assistant helps translate collective will into concrete policy positions.
 
 No black boxes. No back rooms. Everything auditable by anyone.
 
 ---
 
-## Status: Specification Phase
+## Status: Pre-1.0
 
-PolitOS is currently a **specification**, not a running application. This repository defines the rules, processes, and agent architectures for a transparent political organization. There is no code to install or run yet.
+PolitOS is **pre-1.0 and in active development**. It has two layers:
 
-We are designing the blueprint first — openly and collaboratively — before building software on top of it. This is intentional: the rules matter more than the code.
+- **The specification** — the constitution, governance rules, membership model, and agent definitions that define how a PolitOS organization works. Largely complete.
+- **The reference implementation** — a Python runtime (`v0.1.0`): a `politos-init` CLI that scaffolds a new organization, and an MCP server designed to run inside [Claude Code](https://claude.com/claude-code). Early and evolving.
 
-Contributions to the specification are welcome. See [Get Involved](#get-involved).
+The blueprint was designed first, openly and collaboratively — the rules matter more than the code. See the [**wiki**](https://github.com/open-politos/PolitOS/wiki) for full documentation, or [**Getting Started**](https://github.com/open-politos/PolitOS/wiki/Getting-Started) to run it. Contributions are welcome — see [Get Involved](#get-involved).
 
 ---
 
@@ -78,7 +79,7 @@ Every decision, every change, every AI output is logged in a public audit trail.
 
 ## Get Involved
 
-You do not need to be a developer to contribute. Right now, we are shaping the specification and need:
+You do not need to be a developer to contribute. We are shaping both the specification and its first implementation, and need:
 
 - People who understand political organizing and party law
 - Designers who can think about how governance tools should work
@@ -91,9 +92,9 @@ You do not need to be a developer to contribute. Right now, we are shaping the s
 
 ---
 
-## Specification Structure
+## Repository Structure
 
-This repository contains the complete specification for a PolitOS-based organization:
+This repository contains both the PolitOS specification and its reference implementation:
 
 ```
 PolitOS/
@@ -112,10 +113,12 @@ PolitOS/
 │   ├── compliance/            # Validates outputs against constitution layer
 │   ├── summarizer/            # Produces citizen-facing summaries of decisions
 │   ├── kb-curator/            # Proposes KB updates based on new information
-│   └── moderator/             # Manages deliberation phases
+│   ├── moderator/             # Manages deliberation phases
+│   └── setup/                 # Founding wizard for new organizations
 ├── adapters/
 │   └── base/                  # Abstract LLM interface (model-agnostic)
 ├── audit-log/                 # Append-only log of all governance decisions
+├── src/                       # Python runtime — MCP server, agents, CLI scaffold
 ├── config/
 │   └── party.config.yaml      # Organization-specific configuration
 └── docs/
